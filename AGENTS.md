@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the shop in TanStack file routes with shared storefront, catalogue, cart, checkout, and owner-dashboard modules; enforce owner access in database policies as well as the UI so public product browsing stays separate from protected edits and enquiries.
