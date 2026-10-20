@@ -1,0 +1,5 @@
+- [ ] Build the branded public shop pages and responsive navigation.
+- [ ] Add a database-backed demo catalogue, search, category filters, detail pages, and owner editing.
+- [ ] Add persistent cart, validated WhatsApp enquiry checkout, and private enquiry management.
+- [ ] Add secure owner sign-in, profile and role protections, image uploads, and setup guidance.
+- [ ] Verify key rules, routes, responsive display, and the preview build.
