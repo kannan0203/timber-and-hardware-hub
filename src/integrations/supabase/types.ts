@@ -244,6 +244,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      submit_store_enquiry: {
+        Args: {
+          p_customer_name: string
+          p_delivery_address: string
+          p_fulfillment: string
+          p_idempotency_key: string
+          p_items: Json
+          p_notes: string
+          p_phone: string
+        }
+        Returns: {
+          reference_code: string
+          subtotal: number
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "customer"
