@@ -79,7 +79,8 @@ export const getProduct = createServerFn({ method: "GET" })
     return product ?? null;
   });
 
-async function assertStoreAdmin(supabase: { rpc: (name: "has_role", args: { _user_id: string; _role: "admin" }) => Promise<{ data: boolean | null; error: unknown }> }, userId: string) {
+import type { SupabaseClient } from "@supabase/supabase-js";
+async function assertStoreAdmin(supabase: SupabaseClient<Database>, userId: string) {
   const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (error || !data) throw new Error("Only the shop owner can access this area.");
 }
@@ -191,7 +192,7 @@ export const submitStoreEnquiry = createServerFn({ method: "POST" })
   .inputValidator((input) => enquirySchema.parse(input))
   .handler(async ({ data }) => {
     const client = await makeStoreClient();
-    const { data: result, error } = await client.rpc("submit_store_enquiry_v2", {
+    const { data: result, error } = await client.rpc("submit_store_enquiry", {
       p_idempotency_key: data.idempotencyKey,
       p_customer_name: data.customerName,
       p_phone: data.phone,
