@@ -1,25 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/store/site-layout";
+import { CategoryListing } from "@/components/store/category-listing";
 
 export const Route = createFileRoute("/timber")({
   head: () => ({
     meta: [
-      { title: "Timber and Plywood | Sri Amman & Senthivelan Hardwares" },
-      { name: "description", content: "Timber and plywood supplies in Aranthangi Taluk." },
-      { property: "og:title", content: "Timber and Plywood | Sri Amman & Senthivelan Hardwares" },
-      { property: "og:description", content: "Timber and plywood supplies in Aranthangi Taluk." },
+      { title: "Timber & Plywood | Sri Amman & Senthivelan Hardwares" },
+      { name: "description", content: "Wood sections and plywood sheets listed in our online catalogue. Demo prices — confirm with the shop." },
+      { property: "og:title", content: "Timber & Plywood | Sri Amman & Senthivelan Hardwares" },
+      { property: "og:description", content: "Wood sections and plywood sheets listed in our online catalogue." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQueryOptions()),
   component: Page,
 });
 
 function Page() {
   return (
     <SiteLayout>
-      <section className="shell-width" style={{ padding: "3rem 1rem" }}>
-        <h1>Timber and Plywood</h1>
-        <p>Timber and plywood supplies in Aranthangi Taluk.</p>
-      </section>
+      <CategoryListing
+        eyebrow="Division: Sri Amman Marailaipagam"
+        title="Timber & plywood"
+        description="Wood sections and plywood sheets for construction, carpentry and home work. Tell us your sizes — we quote and cut to suit."
+        slugs={["timber"]}
+      />
     </SiteLayout>
   );
 }

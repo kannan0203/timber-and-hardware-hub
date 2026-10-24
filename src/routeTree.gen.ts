@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DoorsRouteImport } from './routes/doors'
 import { Route as HardwareRouteImport } from './routes/hardware'
@@ -22,6 +23,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimberRouteImport } from './routes/timber'
+import { Route as ProductsIdRouteImport } from './routes/products.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +48,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -88,6 +95,11 @@ const TimberRoute = TimberRouteImport.update({
   path: '/timber',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsIdRoute = ProductsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ProductsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -95,14 +107,16 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/admin-login': typeof AdminLoginRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/doors': typeof DoorsRoute
   '/hardware': typeof HardwareRoute
   '/paints-tools': typeof PaintsToolsRoute
   '/privacy': typeof PrivacyRoute
-  '/products': typeof ProductsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/terms': typeof TermsRoute
   '/timber': typeof TimberRoute
+  '/products/$id': typeof ProductsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,14 +124,16 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/admin-login': typeof AdminLoginRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/doors': typeof DoorsRoute
   '/hardware': typeof HardwareRoute
   '/paints-tools': typeof PaintsToolsRoute
   '/privacy': typeof PrivacyRoute
-  '/products': typeof ProductsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/terms': typeof TermsRoute
   '/timber': typeof TimberRoute
+  '/products/$id': typeof ProductsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -126,14 +142,16 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/admin-login': typeof AdminLoginRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/doors': typeof DoorsRoute
   '/hardware': typeof HardwareRoute
   '/paints-tools': typeof PaintsToolsRoute
   '/privacy': typeof PrivacyRoute
-  '/products': typeof ProductsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/terms': typeof TermsRoute
   '/timber': typeof TimberRoute
+  '/products/$id': typeof ProductsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -143,6 +161,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/doors'
     | '/hardware'
@@ -151,6 +170,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/terms'
     | '/timber'
+    | '/products/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -158,6 +178,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/doors'
     | '/hardware'
@@ -166,6 +187,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/terms'
     | '/timber'
+    | '/products/$id'
   id:
     | '__root__'
     | '/'
@@ -173,6 +195,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/doors'
     | '/hardware'
@@ -181,6 +204,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/terms'
     | '/timber'
+    | '/products/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -189,12 +213,13 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AdminLoginRoute: typeof AdminLoginRoute
   CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   DoorsRoute: typeof DoorsRoute
   HardwareRoute: typeof HardwareRoute
   PaintsToolsRoute: typeof PaintsToolsRoute
   PrivacyRoute: typeof PrivacyRoute
-  ProductsRoute: typeof ProductsRoute
+  ProductsRoute: typeof ProductsRouteWithChildren
   TermsRoute: typeof TermsRoute
   TimberRoute: typeof TimberRoute
 }
@@ -234,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -292,8 +324,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/products/$id': {
+      id: '/products/$id'
+      path: '/$id'
+      fullPath: '/products/$id'
+      preLoaderRoute: typeof ProductsIdRouteImport
+      parentRoute: typeof ProductsRoute
+    }
   }
 }
+
+interface ProductsRouteChildren {
+  ProductsIdRoute: typeof ProductsIdRoute
+}
+
+const ProductsRouteChildren: ProductsRouteChildren = {
+  ProductsIdRoute: ProductsIdRoute,
+}
+
+const ProductsRouteWithChildren = ProductsRoute._addFileChildren(
+  ProductsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -301,12 +352,13 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AdminLoginRoute: AdminLoginRoute,
   CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   DoorsRoute: DoorsRoute,
   HardwareRoute: HardwareRoute,
   PaintsToolsRoute: PaintsToolsRoute,
   PrivacyRoute: PrivacyRoute,
-  ProductsRoute: ProductsRoute,
+  ProductsRoute: ProductsRouteWithChildren,
   TermsRoute: TermsRoute,
   TimberRoute: TimberRoute,
 }
