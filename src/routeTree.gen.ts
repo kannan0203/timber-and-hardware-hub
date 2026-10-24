@@ -22,6 +22,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimberRouteImport } from './routes/timber'
+import { Route as ProductsIdRouteImport } from './routes/products.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,11 @@ const TimberRoute = TimberRouteImport.update({
   path: '/timber',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsIdRoute = ProductsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ProductsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -100,9 +106,10 @@ export interface FileRoutesByFullPath {
   '/hardware': typeof HardwareRoute
   '/paints-tools': typeof PaintsToolsRoute
   '/privacy': typeof PrivacyRoute
-  '/products': typeof ProductsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/terms': typeof TermsRoute
   '/timber': typeof TimberRoute
+  '/products/$id': typeof ProductsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,9 +122,10 @@ export interface FileRoutesByTo {
   '/hardware': typeof HardwareRoute
   '/paints-tools': typeof PaintsToolsRoute
   '/privacy': typeof PrivacyRoute
-  '/products': typeof ProductsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/terms': typeof TermsRoute
   '/timber': typeof TimberRoute
+  '/products/$id': typeof ProductsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,9 +139,10 @@ export interface FileRoutesById {
   '/hardware': typeof HardwareRoute
   '/paints-tools': typeof PaintsToolsRoute
   '/privacy': typeof PrivacyRoute
-  '/products': typeof ProductsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/terms': typeof TermsRoute
   '/timber': typeof TimberRoute
+  '/products/$id': typeof ProductsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/terms'
     | '/timber'
+    | '/products/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/terms'
     | '/timber'
+    | '/products/$id'
   id:
     | '__root__'
     | '/'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/terms'
     | '/timber'
+    | '/products/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -194,7 +206,7 @@ export interface RootRouteChildren {
   HardwareRoute: typeof HardwareRoute
   PaintsToolsRoute: typeof PaintsToolsRoute
   PrivacyRoute: typeof PrivacyRoute
-  ProductsRoute: typeof ProductsRoute
+  ProductsRoute: typeof ProductsRouteWithChildren
   TermsRoute: typeof TermsRoute
   TimberRoute: typeof TimberRoute
 }
@@ -292,8 +304,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/products/$id': {
+      id: '/products/$id'
+      path: '/$id'
+      fullPath: '/products/$id'
+      preLoaderRoute: typeof ProductsIdRouteImport
+      parentRoute: typeof ProductsRoute
+    }
   }
 }
+
+interface ProductsRouteChildren {
+  ProductsIdRoute: typeof ProductsIdRoute
+}
+
+const ProductsRouteChildren: ProductsRouteChildren = {
+  ProductsIdRoute: ProductsIdRoute,
+}
+
+const ProductsRouteWithChildren = ProductsRoute._addFileChildren(
+  ProductsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -306,7 +337,7 @@ const rootRouteChildren: RootRouteChildren = {
   HardwareRoute: HardwareRoute,
   PaintsToolsRoute: PaintsToolsRoute,
   PrivacyRoute: PrivacyRoute,
-  ProductsRoute: ProductsRoute,
+  ProductsRoute: ProductsRouteWithChildren,
   TermsRoute: TermsRoute,
   TimberRoute: TimberRoute,
 }
