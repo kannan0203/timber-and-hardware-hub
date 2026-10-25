@@ -244,6 +244,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      store_has_owner: { Args: never; Returns: boolean }
       submit_store_enquiry: {
         Args: {
           p_customer_name: string
