@@ -102,7 +102,7 @@ function ProductDetailPage() {
 
             <p className="mt-4 leading-relaxed text-[var(--color-muted-foreground)]">{product.description}</p>
 
-            {product.variants.length > 0 && (
+            {(((product.variants ?? []) as Array<{ name: string; options: string[] }>).length > 0 && (
               <div className="mt-4">
                 <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">Options</h2>
                 <div className="variant-list">
@@ -113,7 +113,7 @@ function ProductDetailPage() {
                   )}
                 </div>
               </div>
-            )}
+            ))}
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <div className="qty-controls" aria-label="Quantity">
