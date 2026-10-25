@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/store/site-layout";
 import { CategoryListing } from "@/components/store/category-listing";
+import { catalogQueryOptions } from "@/lib/catalog-queries";
 
 export const Route = createFileRoute("/hardware")({
   head: () => ({
