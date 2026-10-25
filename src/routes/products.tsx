@@ -10,9 +10,10 @@ import { ProductCard } from "@/components/store/product-card";
 import { catalogQueryOptions, searchProducts, sortCatalogProducts, type ProductSort } from "@/lib/catalog-queries";
 
 export const Route = createFileRoute("/products")({
-  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
-    q: typeof search["q"] === "string" && search["q"].length > 0 ? search["q"].slice(0, 80) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { q?: string } => {
+    const q = typeof search["q"] === "string" && search["q"].length > 0 ? search["q"].slice(0, 80) : undefined;
+    return q === undefined ? {} : { q };
+  },
   head: () => ({
     meta: [
       { title: "All Products | Sri Amman & Senthivelan Hardwares" },
