@@ -50,9 +50,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<StoreContextValue>(() => {
     const update = (productId: string, quantity: number, stock?: number | null) => {
       const limited = stock == null ? quantity : Math.min(quantity, stock);
-      setCart((current) => limited <= 0
-        ? current.filter((item) => item.productId !== productId)
-        : current.map((item) => item.productId === productId ? { ...item, quantity: limited } : item));
+      setCart((current) => {
+        if (limited <= 0) return current.filter((item) => item.productId !== productId);
+        const exists = current.some((item) => item.productId === productId);
+        return exists
+          ? current.map((item) => (item.productId === productId ? { ...item, quantity: limited } : item))
+          : [...current, { productId, quantity: limited }];
+      });
     };
     return {
       cart,
