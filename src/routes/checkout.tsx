@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
@@ -18,7 +18,6 @@ import {
   isValidMobile,
   normalizePhone,
   productEffectivePrice,
-  type EnquiryRow,
 } from "@/lib/store.types";
 
 export const Route = createFileRoute("/checkout")({
@@ -47,7 +46,6 @@ type FieldErrors = Partial<Record<"customerName" | "phone" | "deliveryAddress", 
 function CheckoutPage() {
   const { data } = useSuspenseQuery(catalogQueryOptions());
   const { cart, clear } = useStoreCart();
-  const navigate = useNavigate();
 
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
@@ -154,9 +152,6 @@ function CheckoutPage() {
           items: lines.map((line) => ({ id: line.product.id, quantity: line.quantity })),
         },
       }) as unknown as EnquiryResult;
-      if (typeof window !== "undefined") {
-        window.open(buildWhatsAppUrl(enquiry.reference_code ? "" : ""), "_blank", "noopener");
-      }
       clear();
       setResult(enquiry);
     } catch (error) {
@@ -165,8 +160,6 @@ function CheckoutPage() {
       setSubmitting(false);
     }
   };
-
-  void navigate;
 
   return (
     <SiteLayout>
@@ -281,5 +274,3 @@ function CheckoutPage() {
     </SiteLayout>
   );
 }
-
-void (undefined as unknown as EnquiryRow | null);
