@@ -108,7 +108,7 @@ function ProductDetailPage() {
               <div className="mt-4">
                 <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">Options</h2>
                 <div className="variant-list">
-                  {product.variants.flatMap((variant, index) =>
+                  {((product.variants ?? []) as Array<{ name: string; options: string[] }>).flatMap((variant, index) =>
                     variant.options.map((option) => (
                       <span key={`${variant.name}-${index}-${option}`} className="variant-chip">{variant.name}: {option}</span>
                     )),
