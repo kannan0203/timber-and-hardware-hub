@@ -10,35 +10,34 @@ import { useStoreCart } from "@/hooks/use-store-cart";
 import { ZOD_ERROR_MESSAGES } from "@/lib/store-detail-helpers";
 
 export const Route = createFileRoute("/products/$id")({
-  head: ({ loaderData }) => ({
+  head: () => ({
     meta: [
       {
-        title: loaderData?.product ? `${loaderData.product.name} | Sri Amman & Senthivelan Hardwares` : "Product | Sri Amman & Senthivelan Hardwares",
+        title: "Product | Sri Amman & Senthivelan Hardwares",
         "data-testid": "product-title",
       },
-      { name: "description", content: loaderData?.product?.description ?? "Product listing from Sri Amman & Senthivelan Hardwares." },
-      { property: "og:title", content: loaderData?.product ? `${loaderData.product.name} | Sri Amman & Senthivelan Hardwares` : "Product | Sri Amman & Senthivelan Hardwares" },
-      { property: "og:description", content: loaderData?.product?.description ?? "Product listing from Sri Amman & Senthivelan Hardwares." },
+      { name: "description", content: "Product listing from Sri Amman & Senthivelan Hardwares." },
+      { property: "og:title", content: "Product | Sri Amman & Senthivelan Hardwares" },
+      { property: "og:description", content: "Product listing from Sri Amman & Senthivelan Hardwares." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: async ({ params }): Promise<{ product: CatalogProduct }> => {
-    try {
-      const product = await getProduct({ data: { id: params.id } });
-      if (!product) throw notFound();
-      return { product };
-    } catch (error) {
-      if (ZOD_ERROR_MESSAGES.some((message) => String(error).includes(message))) throw notFound();
-      throw error;
-    }
-  },
+  loader: ({ context, params }) => context.queryClient.ensureQueryData(productQueryOptions(params.id)),
   component: ProductDetailPage,
 });
 
 function ProductDetailPage() {
-  const { product } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { data } = useSuspenseQuery(productQueryOptions(id));
+  if (!data) throw notFound();
+  const product = data;
   const { add } = useStoreCart();
+
+  useEffect(() => {
+    document.title = `${product.name} | Sri Amman & Senthivelan Hardwares`;
+  }, [product.name]);
+
   const [quantity, setQuantity] = useState(1);
   const hasDiscount = product.discount_price != null && product.discount_price < product.price;
   const effective = productEffectivePrice(product);
