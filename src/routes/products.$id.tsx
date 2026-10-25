@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import type { CatalogProduct } from "@/lib/store.types";
 import { ArrowUpRight, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/products/$id")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: async ({ params }) => {
+  loader: async ({ params }): Promise<{ product: CatalogProduct }> => {
     try {
       const product = await getProduct({ data: { id: params.id } });
       if (!product) throw notFound();

@@ -10,8 +10,8 @@ import { ProductCard } from "@/components/store/product-card";
 import { catalogQueryOptions, searchProducts, sortCatalogProducts, type ProductSort } from "@/lib/catalog-queries";
 
 export const Route = createFileRoute("/products")({
-  validateSearch: (search: Record<string, unknown>): { q: string } => ({
-    q: typeof search.q === "string" ? search.q.slice(0, 80) : "",
+  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
+    q: typeof search["q"] === "string" && search["q"].length > 0 ? search["q"].slice(0, 80) : undefined,
   }),
   head: () => ({
     meta: [
@@ -37,13 +37,13 @@ const SORT_LABELS: Record<ProductSort, string> = {
 function ProductsPage() {
   const { data } = useSuspenseQuery(catalogQueryOptions());
   const search = Route.useSearch();
-  const [query, setQuery] = useState(search.q);
+  const [query, setQuery] = useState(search["q"] ?? "");
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [sort, setSort] = useState<ProductSort>("name-asc");
 
   useEffect(() => {
-    setQuery(search.q);
-  }, [search.q]);
+    setQuery(search["q"] ?? "");
+  }, [search["q"]]);
 
   const products = useMemo(() => {
     const inCategory = activeSlug ? data.products.filter((product) => product.category_slug === activeSlug) : data.products;
