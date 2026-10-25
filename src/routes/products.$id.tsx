@@ -1,13 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import type { CatalogProduct } from "@/lib/store.types";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, Minus, Plus, ShoppingBag } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SiteLayout } from "@/components/store/site-layout";
-import { getProduct } from "@/lib/store.functions";
+import { productQueryOptions } from "@/lib/catalog-queries";
 import { buildWhatsAppUrl, formatRupees, productEffectivePrice } from "@/lib/store.types";
 import { useStoreCart } from "@/hooks/use-store-cart";
-import { ZOD_ERROR_MESSAGES } from "@/lib/store-detail-helpers";
 
 export const Route = createFileRoute("/products/$id")({
   head: () => ({
