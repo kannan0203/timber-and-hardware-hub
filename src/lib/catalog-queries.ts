@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getCatalog } from "./store.functions";
+import { getCatalog, getProduct } from "./store.functions";
 import type { CatalogProduct } from "./store.types";
 
 export type CatalogData = Awaited<ReturnType<typeof getCatalog>>;
@@ -9,6 +9,12 @@ export const catalogQueryOptions = () =>
   queryOptions({
     queryKey: ["store-catalog"],
     queryFn: () => getCatalog({ data: {} }),
+  });
+
+export const productQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: ["store-product", id],
+    queryFn: () => getProduct({ data: { id } }),
   });
 
 export function sortCatalogProducts(products: CatalogProduct[], sort: ProductSort): CatalogProduct[] {

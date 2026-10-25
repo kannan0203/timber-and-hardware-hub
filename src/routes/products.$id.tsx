@@ -1,43 +1,42 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, Minus, Plus, ShoppingBag } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SiteLayout } from "@/components/store/site-layout";
-import { getProduct } from "@/lib/store.functions";
+import { productQueryOptions } from "@/lib/catalog-queries";
 import { buildWhatsAppUrl, formatRupees, productEffectivePrice } from "@/lib/store.types";
 import { useStoreCart } from "@/hooks/use-store-cart";
-import { ZOD_ERROR_MESSAGES } from "@/lib/store-detail-helpers";
 
 export const Route = createFileRoute("/products/$id")({
-  head: ({ loaderData }) => ({
+  head: () => ({
     meta: [
       {
-        title: loaderData?.product ? `${loaderData.product.name} | Sri Amman & Senthivelan Hardwares` : "Product | Sri Amman & Senthivelan Hardwares",
+        title: "Product | Sri Amman & Senthivelan Hardwares",
         "data-testid": "product-title",
       },
-      { name: "description", content: loaderData?.product?.description ?? "Product listing from Sri Amman & Senthivelan Hardwares." },
-      { property: "og:title", content: loaderData?.product ? `${loaderData.product.name} | Sri Amman & Senthivelan Hardwares` : "Product | Sri Amman & Senthivelan Hardwares" },
-      { property: "og:description", content: loaderData?.product?.description ?? "Product listing from Sri Amman & Senthivelan Hardwares." },
+      { name: "description", content: "Product listing from Sri Amman & Senthivelan Hardwares." },
+      { property: "og:title", content: "Product | Sri Amman & Senthivelan Hardwares" },
+      { property: "og:description", content: "Product listing from Sri Amman & Senthivelan Hardwares." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: async ({ params }) => {
-    try {
-      const product = await getProduct({ data: { id: params.id } });
-      if (!product) throw notFound();
-      return { product };
-    } catch (error) {
-      if (ZOD_ERROR_MESSAGES.some((message) => String(error).includes(message))) throw notFound();
-      throw error;
-    }
-  },
+  loader: ({ context, params }) => context.queryClient.ensureQueryData(productQueryOptions(params.id)),
   component: ProductDetailPage,
 });
 
 function ProductDetailPage() {
-  const { product } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { data } = useSuspenseQuery(productQueryOptions(id));
+  if (!data) throw notFound();
+  const product = data;
   const { add } = useStoreCart();
+
+  useEffect(() => {
+    document.title = `${product.name} | Sri Amman & Senthivelan Hardwares`;
+  }, [product.name]);
+
   const [quantity, setQuantity] = useState(1);
   const hasDiscount = product.discount_price != null && product.discount_price < product.price;
   const effective = productEffectivePrice(product);
@@ -103,18 +102,18 @@ function ProductDetailPage() {
 
             <p className="mt-4 leading-relaxed text-[var(--color-muted-foreground)]">{product.description}</p>
 
-            {product.variants.length > 0 && (
+            {(((product.variants ?? []) as Array<{ name: string; options: string[] }>).length > 0 && (
               <div className="mt-4">
                 <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">Options</h2>
                 <div className="variant-list">
-                  {product.variants.flatMap((variant, index) =>
+                  {((product.variants ?? []) as Array<{ name: string; options: string[] }>).flatMap((variant, index) =>
                     variant.options.map((option) => (
                       <span key={`${variant.name}-${index}-${option}`} className="variant-chip">{variant.name}: {option}</span>
                     )),
                   )}
                 </div>
               </div>
-            )}
+            ))}
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <div className="qty-controls" aria-label="Quantity">

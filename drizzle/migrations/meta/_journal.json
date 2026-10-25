@@ -15,6 +15,13 @@
       "when": 1792668874711,
       "tag": "0001_secure_store_enquiry_submission",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792929608224,
+      "tag": "0002_enquiry_function_returns_items",
+      "breakpoints": true
     }
   ]
 }
