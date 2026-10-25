@@ -255,6 +255,7 @@ export type Database = {
           p_phone: string
         }
         Returns: {
+          items: Json
           reference_code: string
           subtotal: number
         }[]
