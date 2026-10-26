@@ -214,3 +214,27 @@ export const updateEnquiryStatus = createServerFn({ method: "POST" })
     if (error) throw new Error("The enquiry status could not be updated.");
     return { success: true };
   });
+
+export const storeOwnerStatus = createServerFn({ method: "GET" }).handler(async () => {
+  const client = await makeStoreClient();
+  const { data, error } = await client.rpc("store_has_owner");
+  if (error) throw new Error("The shop sign-in could not be checked. Please try again.");
+  return { hasOwner: Boolean(data) };
+});
+
+// The first account to sign in becomes the shop owner; every later account is
+// turned away unless it already holds the admin role.
+export const claimStoreAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (roleError) throw new Error("Sign-in could not be completed. Please try again.");
+    if (isAdmin) return { role: "admin" as const };
+    const { data: hasOwner, error: ownerError } = await context.supabase.rpc("store_has_owner");
+    if (ownerError) throw new Error("Sign-in could not be completed. Please try again.");
+    if (hasOwner) return { role: "none" as const };
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("user_roles").insert({ user_id: context.userId, role: "admin" });
+    if (error) throw new Error("The owner account could not be set up. Please try again.");
+    return { role: "admin" as const };
+  });
