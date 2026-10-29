@@ -8,12 +8,11 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { StoreProvider } from "@/hooks/use-store-cart";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
@@ -40,9 +39,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -83,16 +79,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Sri Amman & Senthivelan Hardwares | Timber, Doors & Hardware" },
       { name: "description", content: "Timber, plywood, doors, wooden frames, paints and everyday hardware supplies in Pudukkottai District, Tamil Nadu." },
       { property: "og:title", content: "Sri Amman & Senthivelan Hardwares" },
+      { property: "og:site_name", content: "Sri Amman & Senthivelan Hardwares" },
       { property: "og:description", content: "Timber, plywood, doors and hardware supplies in Pudukkottai District, Tamil Nadu." },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "Sri Amman & Senthivelan Hardwares" },
+      { name: "twitter:description", content: "Timber, plywood, doors and hardware supplies in Pudukkottai District, Tamil Nadu." },
       { name: "twitter:card", content: "summary" },
+      { name: "theme-color", content: "#5c3a2a" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" },

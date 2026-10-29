@@ -54,7 +54,7 @@ function Index() {
               <Button asChild size="lg" className="bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent)] hover:brightness-105">
                 <Link to="/products">Shop Products</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-[oklch(1_0_0/40%)] text-[var(--color-primary-foreground)] hover:text-[var(--color-primary-foreground)] hover:bg-[oklch(1_0_0/12%)]">
+              <Button asChild size="lg" variant="outline" className="bg-transparent border-[oklch(1_0_0/40%)] text-[var(--color-primary-foreground)] hover:text-[var(--color-primary-foreground)] hover:bg-[oklch(1_0_0/12%)]">
                 <a href={buildWhatsAppUrl("Hello, I would like to enquire about timber and hardware supplies.")} target="_blank" rel="noreferrer">
                   Enquire on WhatsApp <ArrowUpRight size={16} />
                 </a>
